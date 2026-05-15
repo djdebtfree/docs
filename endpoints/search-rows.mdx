@@ -1,6 +1,6 @@
 ---
 title: "Search rows"
-api: "POST https://api.datadriver.com/v1/datasets/{table}/search"
+api: "POST https://api.trydatadriver.com/v1/datasets/{table}/search"
 description: "The main read endpoint. Returns actual row data, paginated, with filters applied."
 ---
 
@@ -29,7 +29,7 @@ still doing a "read" -- it just needs more input.
 ## Request
 
 ```bash
-curl https://api.datadriver.com/v1/datasets/leads/search \
+curl https://api.trydatadriver.com/v1/datasets/leads/search \
   -H "Authorization: Bearer dd_a3f9b2c1d4e5f6g7h8i9j0" \
   -H "Content-Type: application/json" \
   -d '{

@@ -1,6 +1,6 @@
 ---
 title: "List datasets"
-api: "GET https://api.datadriver.com/v1/datasets"
+api: "GET https://api.trydatadriver.com/v1/datasets"
 description: "Find out which tables of data you can read with your key."
 ---
 
@@ -14,12 +14,12 @@ table. Think of it like opening a library catalog.
 
 <CodeGroup>
 ```bash curl
-curl https://api.datadriver.com/v1/datasets \
+curl https://api.trydatadriver.com/v1/datasets \
   -H "Authorization: Bearer dd_a3f9b2c1d4e5f6g7h8i9j0"
 ```
 
 ```js node
-const r = await fetch('https://api.datadriver.com/v1/datasets', {
+const r = await fetch('https://api.trydatadriver.com/v1/datasets', {
   headers: { Authorization: `Bearer ${process.env.DD_API_KEY}` },
 });
 const { datasets } = await r.json();
@@ -28,7 +28,7 @@ const { datasets } = await r.json();
 ```python python
 import os, requests
 r = requests.get(
-  'https://api.datadriver.com/v1/datasets',
+  'https://api.trydatadriver.com/v1/datasets',
   headers={'Authorization': f"Bearer {os.environ['DD_API_KEY']}"},
 )
 datasets = r.json()['datasets']

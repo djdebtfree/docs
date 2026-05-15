@@ -1,6 +1,6 @@
 ---
 title: "Get stats"
-api: "GET https://api.datadriver.com/v1/datasets/{table}/stats"
+api: "GET https://api.trydatadriver.com/v1/datasets/{table}/stats"
 description: "Pre-counted totals broken down by columns. Lets you size queries before pulling rows."
 ---
 
@@ -25,7 +25,7 @@ cheap call. Perfect for dashboards and filter UIs.
 ## Request
 
 ```bash
-curl "https://api.datadriver.com/v1/datasets/leads/stats?group_by=tier,state" \
+curl "https://api.trydatadriver.com/v1/datasets/leads/stats?group_by=tier,state" \
   -H "Authorization: Bearer dd_a3f9b2c1d4e5f6g7h8i9j0"
 ```
 
