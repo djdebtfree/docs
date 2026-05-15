@@ -21,9 +21,9 @@ Listing multiple columns means **all of them** must match (AND).
 | `in` | is one of | array | `"state": {"in": ["AZ","TX"]}` |
 | `not_in` | is none of | array | `"credit_rating": {"not_in": ["U","H"]}` |
 | `gt` | greater than | number/date | `"age": {"gt": 18}` |
-| `gte` | >= | number/date | `"age": {"gte": 30}` |
+| `gte` | `>=` | number/date | `"age": {"gte": 30}` |
 | `lt` | less than | number/date | `"age": {"lt": 65}` |
-| `lte` | <= | number/date | `"age": {"lte": 65}` |
+| `lte` | `<=` | number/date | `"age": {"lte": 65}` |
 | `between` | inclusive range | `[min, max]` | `"age": {"between": [30, 65]}` |
 | `like` | SQL LIKE (case-sensitive) | string with `%` | `"first_name": {"like": "John%"}` |
 | `ilike` | case-insensitive LIKE | string with `%` | `"personal_email": {"ilike": "%@gmail.com"}` |
