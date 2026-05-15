@@ -22,7 +22,7 @@ still doing a "read" -- it just needs more input.
 |---|---|---|
 | `select` (optional) | array of strings | Which columns to return. Omit for all columns your key can see. |
 | `filters` (optional) | object | Filter rules per column. Format: `{ "column": { "operator": value } }`. AND across columns. |
-| `sort` (optional) | array of objects | `[{ "column": "...", "direction": "asc"|"desc" }]`. Default: `lead_time desc`. |
+| `sort` (optional) | array of objects | `[{ "column": "...", "direction": "asc" or "desc" }]`. Default: `lead_time desc`. |
 | `limit` (optional) | integer | Rows per page. Default 100. Max 1000. |
 | `cursor` (optional) | string | From the previous response's `next_cursor`. Omit on the first call. |
 
