@@ -1,0 +1,28 @@
+---
+title: "Glossary"
+description: "Every term that might be unfamiliar."
+---
+
+| Term | Meaning |
+|---|---|
+| **API** | Application Programming Interface -- a way for one program to talk to another over the internet. |
+| **Endpoint** | A specific URL on the API that does one thing. `GET /v1/datasets` is an endpoint. |
+| **HTTP method** | The verb of the request: `GET` reads, `POST` sends data. |
+| **Header** | Extra info attached to a request -- like `Authorization` for your key, or `Content-Type` for the body's format. |
+| **Body** | The data sent with a request. JSON for this API. Only on POST here. |
+| **JSON** | A text format for structured data. `{"key": "value"}`. |
+| **Bearer token** | A type of API key sent in the `Authorization` header with the word `Bearer` in front. |
+| **Scope** | A permission attached to your key. Without the right scope, you'll get `403`. |
+| **Rate limit** | Maximum requests per minute. Default 60. |
+| **Pagination** | Splitting big results across multiple responses. |
+| **Cursor** | An opaque string the API gives you so you can ask for "the next page." |
+| **Filter** | A rule that narrows results -- e.g. only rows where `state = AZ`. |
+| **Operator** | The verb in a filter -- `eq`, `in`, `between`, etc. |
+| **Schema** | The shape of a table -- column names, types, what filters work on each. |
+| **Export** | An async file download. You request it, we build it, you download it. |
+| **Signed URL** | A temporary URL that includes a token proving you're allowed to access a file. No auth header needed. |
+| **Idempotency-Key** | A custom header you send so retries don't create duplicates. |
+| **ISO 8601** | A standard date format like `2026-05-09T12:14:00Z`. The `Z` means UTC. |
+| **E.164** | A standard phone number format like `+16025159996`. |
+| **PII** | Personally Identifiable Information -- names, emails, phones, addresses. Treat carefully. |
+| **request_id** | The opaque identifier we attach to every request and echo in error responses. Include it when contacting support. |

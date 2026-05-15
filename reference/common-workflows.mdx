@@ -1,0 +1,69 @@
+---
+title: "Common workflows"
+description: "Real scenarios end-to-end."
+---
+
+## Workflow A -- "Show me a dashboard of leads by state"
+
+<Steps>
+  <Step title="Get the schema once">
+    Cache `GET /v1/datasets/leads/schema` on your end. You'll need it
+    to build dropdowns.
+  </Step>
+  <Step title="Pull stats">
+    `GET /v1/datasets/leads/stats?group_by=state,tier` -- gives you
+    counts by state and tier in one cheap call.
+  </Step>
+  <Step title="Render the dashboard">
+    Loop through `groups`, draw a chart. Refresh the call every
+    minute (response is cached anyway).
+  </Step>
+</Steps>
+
+## Workflow B -- "Find homeowners aged 30-55 in TX, AZ, NV -- first 500 results"
+
+<Steps>
+  <Step title="Call /search with limit=500">
+    ```bash
+    POST /v1/datasets/leads/search
+    {
+      "filters": {
+        "state":     { "in": ["TX","AZ","NV"] },
+        "age":       { "between": [30, 55] },
+        "homeowner": { "eq": "Y" },
+        "dnc":       { "eq": "N" }
+      },
+      "limit": 500
+    }
+    ```
+  </Step>
+  <Step title="Use the rows">
+    The response's `rows` array has up to 500 lead objects.
+    `total_estimate` tells you how many more match.
+  </Step>
+</Steps>
+
+## Workflow C -- "Export every California lead to CSV"
+
+<Steps>
+  <Step title="Kick off the export">
+    ```bash
+    POST /v1/exports
+    {
+      "table":       "leads",
+      "select":      ["*"],
+      "filters":     { "state": { "eq": "CA" } },
+      "format":      "csv",
+      "compression": "gzip"
+    }
+    ```
+    Save the returned `export_id`.
+  </Step>
+  <Step title="Poll until ready">
+    Every 5 seconds: `GET /v1/exports/{id}`. Stop when
+    `status = completed`.
+  </Step>
+  <Step title="Download">
+    Curl the `download_url` and decompress. Done.
+  </Step>
+</Steps>

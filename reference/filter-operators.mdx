@@ -1,0 +1,56 @@
+---
+title: "Filter operators"
+description: "Every operator with examples."
+---
+
+Filters are how you narrow down what rows you get. The shape is
+always:
+
+```json
+{ "column_name": { "operator": value } }
+```
+
+Listing multiple columns means **all of them** must match (AND).
+
+## Every operator
+
+| Operator | Means | Value shape | Example |
+|---|---|---|---|
+| `eq` | equals | scalar | `"state": {"eq": "AZ"}` |
+| `neq` | not equal | scalar | `"credit_rating": {"neq": "U"}` |
+| `in` | is one of | array | `"state": {"in": ["AZ","TX"]}` |
+| `not_in` | is none of | array | `"credit_rating": {"not_in": ["U","H"]}` |
+| `gt` | greater than | number/date | `"age": {"gt": 18}` |
+| `gte` | >= | number/date | `"age": {"gte": 30}` |
+| `lt` | less than | number/date | `"age": {"lt": 65}` |
+| `lte` | <= | number/date | `"age": {"lte": 65}` |
+| `between` | inclusive range | `[min, max]` | `"age": {"between": [30, 65]}` |
+| `like` | SQL LIKE (case-sensitive) | string with `%` | `"first_name": {"like": "John%"}` |
+| `ilike` | case-insensitive LIKE | string with `%` | `"personal_email": {"ilike": "%@gmail.com"}` |
+| `is_null` | is empty | `true` | `"facebook_url": {"is_null": true}` |
+| `not_null` | is not empty | `true` | `"linkedin_url": {"not_null": true}` |
+| `contains` | array contains | array | `"interests": {"contains": ["fitness"]}` |
+
+## Combining filters (AND logic)
+
+```json
+{
+  "filters": {
+    "state":     { "eq": "TX" },
+    "age":       { "gte": 30 },
+    "homeowner": { "eq": "Y" },
+    "dnc":       { "eq": "N" }
+  }
+}
+```
+
+## Wildcards in `like` / `ilike`
+
+The `%` character matches any number of characters:
+
+| Pattern | Matches |
+|---|---|
+| `"John%"` | John, Johnny, Johnathan |
+| `"%smith"` | Smith, Goldsmith |
+| `"%@gmail.com"` | any Gmail address |
+| `"%manager%"` | Manager, General Manager, Sales Mgr. |

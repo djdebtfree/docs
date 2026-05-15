@@ -1,0 +1,88 @@
+---
+title: "Get schema"
+api: "GET https://api.datadriver.com/v1/datasets/{table}/schema"
+description: "Discover the columns of a table and which filter operators each column supports."
+---
+
+## When you'd use this
+
+Before searching or exporting. The schema tells you *what fields
+exist* (e.g. `first_name`, `state`, `age`) and *how you can filter
+each one*. This is also how you build dynamic filter UIs.
+
+## Path parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `table` | string (required) | The table name from `GET /v1/datasets` -- usually `leads`. |
+
+## Request
+
+```bash
+curl https://api.datadriver.com/v1/datasets/leads/schema \
+  -H "Authorization: Bearer dd_a3f9b2c1d4e5f6g7h8i9j0"
+```
+
+## Response
+
+```json
+{
+  "table": "leads",
+  "version": "2026.05.09",
+  "columns": [
+    {
+      "name": "first_name",
+      "type": "text",
+      "nullable": true,
+      "operators": ["eq", "in", "ilike", "is_null"]
+    },
+    {
+      "name": "state",
+      "type": "text",
+      "nullable": true,
+      "operators": ["eq", "in", "not_in"],
+      "enum": ["AL","AK","AZ","AR","CA"]
+    },
+    {
+      "name": "age",
+      "type": "int",
+      "nullable": true,
+      "operators": ["eq","gt","gte","lt","lte","between"]
+    },
+    {
+      "name": "income_range",
+      "type": "enum_text",
+      "nullable": true,
+      "operators": ["eq","in","gte","lte"],
+      "ordered_values": [
+        "less than $20,000",
+        "$20,000 to $44,999",
+        "$45,000 to $59,999",
+        "$60,000 to $74,999"
+      ]
+    }
+  ]
+}
+```
+
+### Field reference
+
+| Field | Meaning |
+|---|---|
+| `name` | The column name. Use this in your filter object as the key. |
+| `type` | Data type: `text`, `int`, `timestamptz`, `uuid`, `bool`, `enum_text`. |
+| `nullable` | `true` = the column can be empty for some rows. |
+| `operators` | Which filter operators work on this column. See [Filter operators](/reference/filter-operators). |
+| `enum` | *Optional.* For columns with a fixed set of valid values. |
+| `ordered_values` | *Optional.* For columns where order matters but values are text. |
+
+<Check>
+  **Pro move.** Cache the schema response by `version`. When the
+  version changes, refresh -- it means we added or modified columns.
+</Check>
+
+<Warning>
+  **PII columns.** If you don't have the `pii_restricted` scope on
+  your key, columns marked as restricted (like `personal_email`,
+  `phone`) won't appear in the schema at all.
+</Warning>

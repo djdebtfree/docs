@@ -1,0 +1,58 @@
+---
+title: "Get stats"
+api: "GET https://api.datadriver.com/v1/datasets/{table}/stats"
+description: "Pre-counted totals broken down by columns. Lets you size queries before pulling rows."
+---
+
+## When you'd use this
+
+Before paying the cost of pulling thousands of rows, peek at the
+counts. *"How many tier-1 leads in Texas?"* -- this answers it in one
+cheap call. Perfect for dashboards and filter UIs.
+
+## Query parameters
+
+| Name | Type | Default | Description |
+|---|---|---|---|
+| `group_by` | string (optional) | `tier,state,match_score` | Comma-separated column names to break down counts by. Max 5. |
+
+<Info>
+  **Cached for 60 seconds.** This endpoint is hit a lot, so we cache
+  it. If you need to-the-second precision, use
+  [`/search`](/endpoints/search-rows).
+</Info>
+
+## Request
+
+```bash
+curl "https://api.datadriver.com/v1/datasets/leads/stats?group_by=tier,state" \
+  -H "Authorization: Bearer dd_a3f9b2c1d4e5f6g7h8i9j0"
+```
+
+<Tip>
+  Note the quotes around the URL. The `?` and `=` can confuse the
+  shell, so wrap it.
+</Tip>
+
+## Response
+
+```json
+{
+  "total": 102345,
+  "group_by": ["tier", "state"],
+  "groups": [
+    { "tier": "1", "state": "AZ", "count": 3214 },
+    { "tier": "1", "state": "TX", "count": 5872 },
+    { "tier": "1", "state": "CA", "count": 7104 },
+    { "tier": "3", "state": "AZ", "count": 1432 },
+    { "tier": "4", "state": "AZ", "count": 945 }
+  ],
+  "cached_at": "2026-05-09T12:14:00Z"
+}
+```
+
+Each item in `groups` shows one combination of values plus its count.
+So the third row above means: *7,104 leads have tier=1 AND state=CA*.
+
+The response includes `X-Cache: HIT` or `X-Cache: MISS` so you can
+see whether the answer came from the cache.

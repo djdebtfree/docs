@@ -1,0 +1,47 @@
+---
+title: "Authentication"
+description: "Every request needs your API key. Without it, you'll get a 401 Unauthenticated error."
+---
+
+Every request needs your API key. Without it, you'll get a
+`401 UNAUTHENTICATED` error.
+
+## Anatomy of an API key
+
+Your key looks like this:
+
+```text
+dd_a3f9b2c1d4e5f6g7h8i9j0
+ ^   ^
+ |   |-- 22 random characters (base62)
+ |-- prefix tells us it's a Data Driver key
+```
+
+<Warning>
+  **Keep it secret.** Don't paste it in public code, screenshots, or
+  chat. If you leak it, ask us to revoke and reissue. We only show the
+  raw key **once** -- at creation.
+</Warning>
+
+## How to send it
+
+Add an `Authorization` header to every request. The value is the word
+`Bearer` plus a space plus your key:
+
+```bash
+Authorization: Bearer dd_a3f9b2c1d4e5f6g7h8i9j0
+```
+
+## What you'll see in responses
+
+Every response includes rate-limit info so you can pace yourself:
+
+```http
+X-RateLimit-Limit: 60      # max requests per minute
+X-RateLimit-Remaining: 58  # how many you have left in this window
+X-RateLimit-Reset: 1715253600  # when the counter resets (unix timestamp)
+X-Request-Id: req_a3f9b2c1d4e5  # echo this back if you need support
+```
+
+If something goes wrong, the error body always includes the
+`request_id` -- include it when you contact support.

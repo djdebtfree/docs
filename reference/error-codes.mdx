@@ -1,0 +1,37 @@
+---
+title: "Error codes"
+description: "What they mean and how to fix them."
+---
+
+Every error returns JSON in this shape:
+
+```json
+{
+  "error": {
+    "code":       "...",
+    "message":    "...",
+    "field":      "...",
+    "request_id": "req_..."
+  }
+}
+```
+
+The `field` is set when an input is at fault and points at the bad
+path (e.g. `filters.homeowner.gt`). The `request_id` is always set --
+include it when contacting support.
+
+## Codes
+
+| HTTP | Code | What happened | How to fix |
+|---|---|---|---|
+| 400 | `BAD_REQUEST` | Your JSON is malformed or a required field is missing. | Validate your JSON. Check the endpoint's request body fields. |
+| 401 | `UNAUTHENTICATED` | Missing or invalid `Authorization` header. | Confirm your key, the `Bearer` prefix, and that the key isn't revoked. |
+| 403 | `FORBIDDEN_SCOPE` | Your key is valid but doesn't have permission for this endpoint. | Ask the Data Driver team to add the missing scope. |
+| 403 | `FORBIDDEN_TABLE` | Your key isn't allowed to read this table. | Request access for the table. |
+| 403 | `FORBIDDEN_FIELD` | Your `select` includes a column you can't see (e.g. PII you're not cleared for). | Remove the field from `select`, or request access. |
+| 404 | `NOT_FOUND` | Unknown table name or export id. | Check the URL spelling. Tables come from `GET /v1/datasets`. |
+| 410 | `EXPORT_EXPIRED` | The export's signed URL has aged out (>7 days). | Re-create the export. |
+| 422 | `INVALID_FILTER` | You used an unknown column or unsupported operator. | Check the response's `field`. Verify against `/schema`. |
+| 422 | `QUERY_TOO_BROAD` | Export would exceed our row limit (10M default). | Add narrower filters. |
+| 429 | `RATE_LIMITED` | You've sent more requests than your limit allows. | Wait. Check the `Retry-After` header for seconds to wait. |
+| 500 | `INTERNAL_ERROR` | Server-side problem. | Note the `request_id` in the response and contact us. |

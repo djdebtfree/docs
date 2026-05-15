@@ -1,0 +1,95 @@
+---
+title: "Search rows"
+api: "POST https://api.datadriver.com/v1/datasets/{table}/search"
+description: "The main read endpoint. Returns actual row data, paginated, with filters applied."
+---
+
+## When you'd use this
+
+Whenever you want to **see actual rows**. Apply filters to narrow the
+result, get up to 1,000 rows per call, then use the cursor to keep
+paging.
+
+## Why POST instead of GET?
+
+The filter object can be complex (nested objects, arrays). It doesn't
+fit cleanly in a URL, so we put it in the request body. The server is
+still doing a "read" -- it just needs more input.
+
+## Request body fields
+
+| Field | Type | Description |
+|---|---|---|
+| `select` (optional) | array of strings | Which columns to return. Omit for all columns your key can see. |
+| `filters` (optional) | object | Filter rules per column. Format: `{ "column": { "operator": value } }`. AND across columns. |
+| `sort` (optional) | array of objects | `[{ "column": "...", "direction": "asc"|"desc" }]`. Default: `lead_time desc`. |
+| `limit` (optional) | integer | Rows per page. Default 100. Max 1000. |
+| `cursor` (optional) | string | From the previous response's `next_cursor`. Omit on the first call. |
+
+## Request
+
+```bash
+curl https://api.datadriver.com/v1/datasets/leads/search \
+  -H "Authorization: Bearer dd_a3f9b2c1d4e5f6g7h8i9j0" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "select": ["first_name","last_name","state","age","homeowner","tier"],
+    "filters": {
+      "state":     { "in":      ["AZ","TX"] },
+      "age":       { "between": [30, 65] },
+      "homeowner": { "eq":      "Y" },
+      "dnc":       { "eq":      "N" },
+      "tier":      { "in":      [1, 3] },
+      "lead_time": { "gte":     "2026-01-01T00:00:00Z" }
+    },
+    "sort":  [{ "column": "lead_time", "direction": "desc" }],
+    "limit": 100
+  }'
+```
+
+## Response
+
+```json
+{
+  "rows": [
+    {
+      "first_name": "Cody",
+      "last_name":  "Schlotfeld",
+      "state":      "AZ",
+      "age":        35,
+      "homeowner":  "Y",
+      "tier":       1
+    }
+    /* ... 99 more rows ... */
+  ],
+  "returned":       100,
+  "next_cursor":    "eyJjIjoibGVhZF90aW1lIiwiZCI6ImRlc2MiLCJ2IjoiMjAyNi0w...",
+  "total_estimate": 8421
+}
+```
+
+### Field reference
+
+| Field | What it is |
+|---|---|
+| `rows` | An array of objects. Each object is one row from the table with the columns you asked for in `select`. |
+| `returned` | How many rows are in this response. Equals `rows.length`. |
+| `next_cursor` | An opaque string. Pass this as `cursor` in your next call to get the next page. `null` means you've hit the end. |
+| `total_estimate` | Approximate total matching rows across all pages -- handy for progress bars. |
+
+## Common error
+
+```json
+{
+  "error": {
+    "code":    "INVALID_FILTER",
+    "message": "Operator 'gt' is not supported on column 'homeowner'.",
+    "field":   "filters.homeowner.gt",
+    "request_id": "req_a3f9b2c1d4e5"
+  }
+}
+```
+
+This means you used an operator that doesn't fit the column type.
+Check [`/schema`](/endpoints/get-schema) to see which operators each
+column supports.

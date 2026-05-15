@@ -1,0 +1,93 @@
+---
+title: "Get export"
+api: "GET https://api.datadriver.com/v1/exports/{id}"
+description: "Check on an export. Once complete, you get a signed download URL."
+---
+
+## When you'd use this
+
+Right after `POST /v1/exports`. Poll every few seconds until status
+is `completed`, then download from `download_url`.
+
+## Path parameters
+
+| Name | Type | Description |
+|---|---|---|
+| `id` | string (required) | The `export_id` from `POST /v1/exports`. |
+
+## Request
+
+```bash
+curl https://api.datadriver.com/v1/exports/exp_a3f9b2c1d4e5f6g7 \
+  -H "Authorization: Bearer dd_a3f9b2c1d4e5f6g7h8i9j0"
+```
+
+## Responses
+
+### Still working (`200 RUNNING`)
+
+```json
+{
+  "export_id":    "exp_a3f9b2c1d4e5f6g7",
+  "status":       "running",
+  "progress_pct": 42,
+  "created_at":   "2026-05-09T12:14:00Z"
+}
+```
+
+### Ready to download (`200 COMPLETED`)
+
+```json
+{
+  "export_id":     "exp_a3f9b2c1d4e5f6g7",
+  "status":        "completed",
+  "row_count":     8421,
+  "byte_size":     932144,
+  "format":        "csv",
+  "compression":   "gzip",
+  "download_url":  "https://xxx.supabase.co/storage/v1/object/sign/api-exports/exp_a3f9...csv.gz?token=...",
+  "url_expires_at":"2026-05-16T12:14:00Z",
+  "completed_at":  "2026-05-09T12:16:38Z"
+}
+```
+
+### Failed (`200 FAILED`)
+
+```json
+{
+  "export_id": "exp_a3f9b2c1d4e5f6g7",
+  "status":    "failed",
+  "error": {
+    "code":    "QUERY_TOO_BROAD",
+    "message": "Filter matches more than 10,000,000 rows. Add narrower constraints."
+  },
+  "failed_at": "2026-05-09T12:14:08Z"
+}
+```
+
+### Expired (`410 GONE`)
+
+```json
+{
+  "error": {
+    "code":    "EXPORT_EXPIRED",
+    "message": "This export expired on 2026-05-16T12:14:00Z. Please re-create.",
+    "request_id": "req_a3f9b2c1d4e5"
+  }
+}
+```
+
+## Downloading the file
+
+Once you have `download_url`, just curl it. **No auth header needed**
+-- the URL is pre-signed:
+
+```bash
+curl -o leads.csv.gz "https://xxx.supabase.co/.../exp_a3f9...csv.gz?token=..."
+gunzip leads.csv.gz
+```
+
+<Warning>
+  **URL expires in 7 days.** If you need it later, re-create the
+  export. Cheaper than us holding files forever.
+</Warning>

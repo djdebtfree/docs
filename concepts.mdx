@@ -1,0 +1,53 @@
+---
+title: "Concepts"
+description: "Each one is just a name for something simple."
+---
+
+Don't worry if some of these are new. Each one is just a name for
+something simple.
+
+<CardGroup cols={2}>
+  <Card title="API" icon="globe">
+    A way for two programs to talk over the internet. You send a
+    request, the API sends a response. Like ordering at a drive-thru:
+    you say what you want, you get it back.
+  </Card>
+  <Card title="HTTP" icon="code">
+    The language of the web. Every request has a **method** (GET =
+    read, POST = send data), a **URL** (where to send it), **headers**
+    (extra info), and sometimes a **body** (the data).
+  </Card>
+  <Card title="JSON" icon="braces">
+    A text format for data. Looks like `{"name": "Cody", "age": 35}`.
+    The API speaks JSON for both questions and answers.
+  </Card>
+  <Card title="API key (bearer token)" icon="key">
+    A secret string that identifies you. You send it in a header on
+    every request: `Authorization: Bearer dd_xxxx`. Treat it like a
+    password.
+  </Card>
+  <Card title="Filter" icon="filter">
+    A rule that narrows down what you get back. Like searching
+    "homeowners in Texas, age 30-50" -- you only get matching rows.
+  </Card>
+  <Card title="Pagination & cursor" icon="list">
+    If a query matches 10,000 rows, we don't dump all of them at once.
+    We send 100 at a time + a **cursor** (like a bookmark) so you can
+    ask for the next 100.
+  </Card>
+  <Card title="Export" icon="download">
+    For really big pulls, paginating is slow. Instead, you ask us to
+    generate a CSV file. We build it in the background and give you a
+    download link.
+  </Card>
+  <Card title="Rate limit" icon="clock">
+    The max requests you can send per minute (60 by default). Go over
+    and you'll get a 429 error telling you to wait.
+  </Card>
+</CardGroup>
+
+<Note>
+  **The mental model.** You're a *client*. We're a *server*. You make
+  HTTP requests with your API key. We send JSON back. That's the
+  whole API.
+</Note>

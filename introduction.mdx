@@ -1,0 +1,39 @@
+---
+title: "Data Driver API"
+description: "HTTP service that lets you read lead data stored in our database. Ask for what you want with filters; get JSON back."
+---
+
+An HTTP service that lets you read lead data stored in our database.
+You ask for what you want (with filters), and you get JSON back. This
+guide explains everything from scratch -- no prior API experience
+needed.
+
+| | |
+|---|---|
+| **Base URL** | `https://api.datadriver.com` |
+| **Auth** | Bearer token |
+| **Rate limit** | 60 requests/min (paid), 10 req/min (trial) |
+| **Daily cap** | 1,000 requests/day (trial only; paid is uncapped) |
+| **Mode** | Read-only |
+
+## How it works in 3 steps
+
+<Steps>
+  <Step title="Get an API key">
+    We give you a secret string that looks like `dd_a3f9b2c1...`.
+    This proves who you are.
+  </Step>
+  <Step title="Send an HTTP request">
+    Use any tool (curl, Postman, your code) to send a request to our
+    API with your key in a header.
+  </Step>
+  <Step title="Get JSON back">
+    The API returns structured data you can use -- list of leads,
+    counts, schema, or a download link.
+  </Step>
+</Steps>
+
+## The mental model
+
+You're a **client**. We're a **server**. You make HTTP requests with
+your API key. We send JSON back. That's the whole API.

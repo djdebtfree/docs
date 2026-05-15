@@ -1,0 +1,70 @@
+---
+title: "List datasets"
+api: "GET https://api.datadriver.com/v1/datasets"
+description: "Find out which tables of data you can read with your key."
+---
+
+## When you'd use this
+
+This is usually the **first** call you make. It tells you what's
+available -- for example, "leads" -- and how many rows are in each
+table. Think of it like opening a library catalog.
+
+## Request
+
+<CodeGroup>
+```bash curl
+curl https://api.datadriver.com/v1/datasets \
+  -H "Authorization: Bearer dd_a3f9b2c1d4e5f6g7h8i9j0"
+```
+
+```js node
+const r = await fetch('https://api.datadriver.com/v1/datasets', {
+  headers: { Authorization: `Bearer ${process.env.DD_API_KEY}` },
+});
+const { datasets } = await r.json();
+```
+
+```python python
+import os, requests
+r = requests.get(
+  'https://api.datadriver.com/v1/datasets',
+  headers={'Authorization': f"Bearer {os.environ['DD_API_KEY']}"},
+)
+datasets = r.json()['datasets']
+```
+</CodeGroup>
+
+## Response
+
+```json
+{
+  "datasets": [
+    {
+      "table": "leads",
+      "name": "Leads",
+      "description": "Enriched contacts",
+      "row_count": 102345,
+      "last_updated_at": "2026-05-09T11:48:41Z",
+      "vertical": "home_services_moving"
+    }
+  ]
+}
+```
+
+### Field reference
+
+| Field | Type | What it means |
+|---|---|---|
+| `datasets` | array | The list of tables you can read. Empty array = your key has no permissions yet. |
+| `table` | string | The internal table name. Use this in `/datasets/{table}/...` URLs. |
+| `name` | string | A friendlier name you can display in your UI. |
+| `description` | string | A sentence about what the data is. |
+| `row_count` | integer | Approximate total rows. Updated periodically. |
+| `last_updated_at` | string (ISO 8601) | Timestamp of the most recent ingest. Useful for cache-busting. |
+| `vertical` | string | The data category (e.g. moving, solar, insurance). |
+
+<Tip>
+  If you want to know **what columns** exist in a table, that's the
+  next endpoint -- [Get schema](/endpoints/get-schema).
+</Tip>
